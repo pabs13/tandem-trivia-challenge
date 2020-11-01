@@ -1,4 +1,4 @@
-export const TRIVIA_CONTENT = [
+export const triviaContent = [
     {
       question: "What was Tandem previous name?",
       incorrect: ["Tandem", "Burger Shack", "Extraordinary Humans"],

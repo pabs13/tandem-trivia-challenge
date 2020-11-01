@@ -1,26 +1,19 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand } from 'reactstrap';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import './App.css';
+import Start from './components/StartComponent'
 import Trivia from './components/TriviaComponent';
-import { TRIVIA_CONTENT } from './shared/triviaContent';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-        triviaContent: TRIVIA_CONTENT
-    };
-  }
+
     render() {
         return (
-            <div className="App">
-                <Navbar dark color="primary">
-                <div className="container">
-                    <NavbarBrand href="/">Trivia Challenge</NavbarBrand>
-                </div>
-                </Navbar>
-                <Trivia triviaContent={this.state.triviaContent}/>
-            </div>
+            <Router>
+              <Switch>
+                <Route path="/" exact component={Start}/>
+                <Route path="/trivia" component={Trivia}/>
+              </Switch>
+            </Router>
         );
     }
 }
