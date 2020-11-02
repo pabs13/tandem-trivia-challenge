@@ -5,6 +5,11 @@ import Finish from './FinishComponent'
 class Trivia extends Component {
     constructor(props) {
         super(props);
+        
+        this.shuffle(triviaContent)
+        const currentQuestion = triviaContent[0]
+        const answers = this.shuffle(currentQuestion.incorrect.concat(currentQuestion.correct))
+        
         this.state = {
           triviaContent: triviaContent,
           questionCount: 0,
@@ -14,21 +19,28 @@ class Trivia extends Component {
           correct: '',
           incorrect: '',
           finish: false,
-          roundCount: 1
+          roundCount: 1,
+          possibleAnswers: answers
         };
     }
 
     nextQuestion(e) {
-
+      
       let questionCount = this.state.questionCount
+      
 
       if(questionCount < 10) {
         
         questionCount++
+        
 
       }
+      const currentQuestion = triviaContent[questionCount]
+      const answers = this.shuffle(currentQuestion.incorrect.concat(currentQuestion.correct))
+      
       this.setState({
         questionCount: questionCount,
+        possibleAnswers: answers,
         disabled: false,
         defaultClass: this.state.defaultClass,
         correct: '',
@@ -106,11 +118,11 @@ class Trivia extends Component {
     }
 
     rednerAnswers(currentQuestion) {
-      const answers = this.shuffle(currentQuestion.incorrect.concat(currentQuestion.correct));
+      
       return(
         <div className="answers-button">
           {
-            answers.map((q, i) => (
+            this.state.possibleAnswers.map((q, i) => (
               <button
                 disabled={this.state.disabled}
                 className={`${ q === currentQuestion.correct ? this.state.correct : this.state.incorrect } answer-button__default`} 
