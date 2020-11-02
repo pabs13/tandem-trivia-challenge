@@ -6,7 +6,7 @@ function Finish(props) {
         <div className="finish-page">
             <div className="content-finish content__finish-page">
             <p className="score">{props.score}/10 <span>Final Score</span></p>
-            <Link to='/' className="start-button">Play Again?</Link>
+            <Link to='/' className="start-button">End Game</Link>
             </div>
         </div>
     );

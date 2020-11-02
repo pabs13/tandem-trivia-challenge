@@ -7,22 +7,27 @@ class Trivia extends Component {
         super(props);
         this.state = {
           triviaContent: triviaContent,
-          index: 0,
+          questionCount: 0,
           score: 0,
           defaultClass: 'answer-button__default',
           disabled: false,
           correct: '',
           incorrect: '',
-          finish: false
+          finish: false,
+          roundCount: 1
         };
     }
+
     nextQuestion(e) {
-      let i = this.state.index
-      if ( i < 10 ) {
-        i++
+      let questionCount = this.state.questionCount
+
+      if(questionCount < 10) {
+        
+        questionCount++
+
       }
       this.setState({
-        index: i,
+        questionCount: questionCount,
         disabled: false,
         defaultClass: this.state.defaultClass,
         correct: '',
@@ -36,8 +41,27 @@ class Trivia extends Component {
       })
     }
 
+    newRound() {
+      let roundCount = this.state.roundCount
+
+      roundCount++
+
+      this.shuffle(triviaContent)
+
+      this.setState({
+        questionCount: 0,
+        score: 0,
+        defaultClass: 'answer-button__default',
+        disabled: false,
+        correct: '',
+        incorrect: '',
+        finish: false,
+        roundCount: roundCount
+      })
+    }
+
     checkAnswer(q) {
-      let currentAnswer = this.state.triviaContent[this.state.index].correct
+      let currentAnswer = this.state.triviaContent[this.state.questionCount].correct
       let score = this.state.score
 
       if (q.target.innerText === currentAnswer) {
@@ -60,10 +84,15 @@ class Trivia extends Component {
     }
 
     renderNextButton() {
-      if (this.state.index < 10) {
+      if (this.state.questionCount < 9) {
         return <button className="next-button" onClick={ event => this.nextQuestion() }>Next</button>
       } else {
-        return <button onClick = { event => this.finish()} className="next-button">Finish</button>
+        return (
+          <div>
+            <button onClick = { event => this.newRound()} className="next-button">Next Round</button>
+            <button onClick = { event => this.finish()} className="next-button">End Game</button>
+          </div>
+        );
       }
     }
 
@@ -75,35 +104,45 @@ class Trivia extends Component {
       return array;
     }
 
-    render() {
-      
-      const currentQuestion = triviaContent[this.state.index]
-      const answers = currentQuestion.incorrect.concat(currentQuestion.correct);
-      const randomAnswer = this.shuffle(answers);
+    rednerAnswers(currentQuestion) {
+      const answers = this.shuffle(currentQuestion.incorrect.concat(currentQuestion.correct));
+      return(
+        <div className="answers-button">
+          {
+            answers.map((q, i) => (
+              <button
+                disabled={this.state.disabled}
+                className={`${ q === currentQuestion.correct ? this.state.correct : this.state.incorrect } answer-button__default`} 
+                onClick={ (event) => this.checkAnswer(event) } >
+                  {q}
+              </button>
+            ))
+          }
+        </div>
+      );
+    }
 
+    render() {
+      const currentQuestion = triviaContent[this.state.questionCount]
+      // let randomAnswer = this.shuffle(answers);
+        
       if (this.state.finish === false) {
+        
         return (
           <div className="quiz-page">
             <div className="quiz-content">
+              <div className="time-container">
+                <h4>Round: {this.state.roundCount}</h4>
+                <h4>Score: {this.state.score} out of 10</h4>
+              </div>
               <div className="progress-container">
-                <p>Question: {this.state.index + 1} of 10</p>
-                <progress value={this.state.index + 1} max={10} className="progress"></progress>
+                <p>Question: {this.state.questionCount + 1} of 10</p>
+                <progress value={this.state.questionCount + 1} max={10} className="progress"></progress>
               </div>
               <div className="display-content">
                 <h3>{currentQuestion.question}</h3>
               </div>
-              <div className="answers-button">
-                {
-                  randomAnswer.map((q, i) => (
-                    <button
-                      disabled={this.state.disabled}
-                      className={`${ q === currentQuestion.correct ? this.state.correct : this.state.incorrect } answer-button__default`} 
-                      onClick={ (event) => this.checkAnswer(event) } >
-                        {q}
-                    </button>
-                  ))
-                }
-              </div>
+              {this.rednerAnswers(currentQuestion)}
               {this.renderNextButton()}
             </div>
           </div>
