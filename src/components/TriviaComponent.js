@@ -19,6 +19,7 @@ class Trivia extends Component {
     }
 
     nextQuestion(e) {
+
       let questionCount = this.state.questionCount
 
       if(questionCount < 10) {
